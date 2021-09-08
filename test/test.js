@@ -26,6 +26,7 @@ addOverlayListener("LogLine", (e) => {
         const id = extractLog(e.line, "ZoneID");
         const name = extractLog(e.line, "ZoneName");
         const val = { 'id': id, 'title': name, 'text': "" };
+        console.log(`${id}:${name}`)
         if ($(`#zones>[value='${id}']`).lenth > 0)
             ;
         else {
