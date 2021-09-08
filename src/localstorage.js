@@ -10,10 +10,15 @@ function saveItem(namespace, key, value) {
     localStorage.setItem(namespace, JSON.stringify(storage));
 }
 function loadItem(namespace, key, def = undefined) {
-    let storage = localStorage.getItem(namespace);
+    const storage = localStorage.getItem(namespace);
     return storage ? JSON.parse(storage)[key] || def : def;
+}
+function loadAll(namespace) {
+    const storage = localStorage.getItem(namespace);
+    return JSON.parse(storage);
 }
 export {
     saveItem,
-    loadItem
+    loadItem,
+    loadAll
 };

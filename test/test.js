@@ -1,5 +1,5 @@
 "use strict";
-import { saveItem, loadItem } from "../src/localstorage.js";
+import { saveItem, loadItem, loadAll } from "../src/localstorage.js";
 import { checkLog, Comparison, extractLog } from "../src/logLineProcessing.js";
 
 const namespace = "test";
@@ -9,22 +9,6 @@ function save(key, def) {
 function load(key, def) {
     return loadItem(namespace, key, def);
 }
-
-//查询
-function cha(t) { }
-
-//读日志，匹配日志
-addOverlayListener("LogLine", (e) => {
-    if (
-        checkLog(e.line, "00", {
-            MessageType: [Comparison.equal, "0038"],//默语
-        })
-    ) {
-        const t = extractLog(e.line, "MessageText");
-        cha(t);
-    }
-});
-
 // 锁定悬浮窗
 document.addEventListener("onOverlayStateUpdate", (e) => {
     if (e.detail.isLocked) {
@@ -34,24 +18,60 @@ document.addEventListener("onOverlayStateUpdate", (e) => {
     }
 });
 
-startOverlayEvents();
+
+//读日志，匹配日志
+// https://www.yuque.com/docs/share/f1da0d8c-79e6-42b3-9697-fd29e7ec1240?#Zzki2
+addOverlayListener("LogLine", (e) => {
+    if (checkLog(e.line, "01")) {
+        const id = extractLog(e.line, "ZoneID");
+        const name = extractLog(e.line, "ZoneName");
+        const val = { 'id': id, 'title': name, 'text': "" };
+        if ($(`#zones>[value='${id}']`).lenth > 0)
+            ;
+        else
+            $("#zones").append(
+                `<option value="${id}">${id}:${val.title}</option>`
+            );
+        $("#zones").val(id);
+    }
+});
+
+$("#clear").on("click", () => {
+    $("#main ul").empty();
+});
+
+$("#zones").change(() => {
+    const id = $("#zones").val();
+    const json = JSON.parse(load(id));
+    $("#text").val(json.text);
+    $("#title").val(json.title);
+});
 
 $("#save").on("click", () => {
-    const zone = $("#zones").val();
-    save("Zone", zone);
+    const title = $("#title").val();
+    const id = $("#zones").val();
+    const text = $("#text").val();
+    if (id) {
+        const val = { 'id': id, 'title': title, 'text': text };
+        save(id, val);
+    }
+
 });
 
-$.ajax({
-    type: "GET",
-    dataType: "json",
-    url: "https://souma-sumire.github.io/resources/zones.json",
-    success: (data) => {
-        for (const key in data) {
-            if (Object.hasOwnProperty.call(data, key)) {
-                $("#zones").append(
-                    `<option value="${key}" ${parseInt(key) === (load('Zone') || 38) ? "selected" : ""}>${data[key]}</option>`
-                );
-            }
-        }
-    },
-});
+function init() {
+    const id = $("#zones").val();
+    const json = loadAll(namespace);
+    for (let k in json) {
+        $("#zones").append(
+            `<option value="${json[k].id}">${json[k].id}:${json[k].title}</option>`
+        );
+        $("#title").val(json[k].title);
+        $("#text").val(json[k].text);
+    }
+
+}
+
+init();
+startOverlayEvents();
+
+export { save, load };
