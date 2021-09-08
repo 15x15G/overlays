@@ -7,6 +7,9 @@
     <script src="https://act.diemoe.net/overlays/common/common.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
     <script type="module" src="./test.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/js/standalone/selectize.min.js" integrity="sha256-+C0A5Ilqmu4QcSPxrlGpaZxJ04VjsRjKu+G82kl5UJk=" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/css/selectize.bootstrap3.min.css" integrity="sha256-ze/OEYGcFbPRmvCnrSeKbRTtjG4vGLHXgOqsyLFTRjg=" crossorigin="anonymous" />
+
 </head>
 
 <body>
@@ -14,8 +17,11 @@
         <p>(🔒锁定悬浮窗以隐藏)</p>
     </div>
     <main id="main">
-        <p><select id="zones"></select></p>
-        <p><button id="clear">清空</button>
+        <p>
+            <select id="zones" placeholder="未载入">
+            </select>
+        </p>
+        <p><button id="clear">删除</button>
             <button id="save">保存</button>
         </p>
         <input id="title">

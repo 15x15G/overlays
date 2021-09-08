@@ -1,5 +1,5 @@
 "use strict";
-import { saveItem, loadItem, loadAll } from "../src/localstorage.js";
+import { saveItem, loadItem, loadAll, removeItem } from "../src/localstorage.js";
 import { checkLog, Comparison, extractLog } from "../src/logLineProcessing.js";
 
 const namespace = "test";
@@ -28,21 +28,23 @@ addOverlayListener("LogLine", (e) => {
         const val = { 'id': id, 'title': name, 'text': "" };
         if ($(`#zones>[value='${id}']`).lenth > 0)
             ;
-        else
+        else {
             $("#zones").append(
                 `<option value="${id}">${id}:${val.title}</option>`
             );
+            save(id, val);
+        }
         $("#zones").val(id);
     }
 });
 
 $("#clear").on("click", () => {
-    $("#main ul").empty();
+
 });
 
 $("#zones").change(() => {
     const id = $("#zones").val();
-    const json = JSON.parse(load(id));
+    const json = load(id);
     $("#text").val(json.text);
     $("#title").val(json.title);
 });
@@ -59,14 +61,12 @@ $("#save").on("click", () => {
 });
 
 function init() {
-    const id = $("#zones").val();
+    save("", { 'id': "", 'title': "", 'text': "" });
     const json = loadAll(namespace);
     for (let k in json) {
         $("#zones").append(
-            `<option value="${json[k].id}">${json[k].id}:${json[k].title}</option>`
+            `<option value="${json[k].id}">${json[k].id} ${json[k].title}</option>`
         );
-        $("#title").val(json[k].title);
-        $("#text").val(json[k].text);
     }
 
 }
@@ -74,4 +74,3 @@ function init() {
 init();
 startOverlayEvents();
 
-export { save, load };

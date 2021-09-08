@@ -17,8 +17,15 @@ function loadAll(namespace) {
     const storage = localStorage.getItem(namespace);
     return JSON.parse(storage);
 }
+function removeItem(namespace, key) {
+    const storage = localStorage.getItem(namespace);
+    if (storage) {
+        delete JSON.parse(storage)[key]
+    }
+}
 export {
     saveItem,
     loadItem,
-    loadAll
+    loadAll,
+    removeItem
 };
