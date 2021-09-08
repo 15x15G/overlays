@@ -34,7 +34,7 @@ addOverlayListener("LogLine", (e) => {
             );
             save(id, val);
         }
-        $("#zones").val(id);
+        $("#zones").val(id).change();
     }
 });
 
@@ -68,9 +68,12 @@ function init() {
             `<option value="${json[k].id}">${json[k].id} ${json[k].title}</option>`
         );
     }
+    $("#zones").val("").change();
 
 }
 
 init();
 startOverlayEvents();
 
+//decodeURIComponent('%F3%A0%80%80').codePointAt(0)
+//decodeURIComponent('%F3%A0%BF%B0').codePointAt(0)
