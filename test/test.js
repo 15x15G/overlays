@@ -22,7 +22,7 @@ document.addEventListener("onOverlayStateUpdate", (e) => {
 //读日志，匹配日志
 // https://www.yuque.com/docs/share/f1da0d8c-79e6-42b3-9697-fd29e7ec1240?#Zzki2
 addOverlayListener("LogLine", (e) => {
-    if (checkLog(e.line, "01")) {
+    if (checkLog(e.line, "01", {})) {
         const id = extractLog(e.line, "ZoneID");
         const name = extractLog(e.line, "ZoneName");
         const val = { 'id': id, 'title': name, 'text': "" };
