@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="utf-8" />
+    <title>Logs</title>
+    <script src="https://act.diemoe.net/overlays/common/common.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+    <script type="module" src="./test.js"></script>
+</head>
+
+<body>
+    <div id="readMe" hidden>
+        <p>(🔒锁定悬浮窗以隐藏)</p>
+    </div>
+    <main id="main">
+        <p><select id="zones"></select></p>
+        <p><button id="clear">清空</button>
+            <button id="save">保存</button>
+        </p>
+        <ul>
+            <li>/e</li>
+        </ul>
+    </main>
+    <script>
+        $("#clear").on("click", () => {
+            $("#main ul").empty();
+        });
+    </script>
+</body>
+
+</html>
