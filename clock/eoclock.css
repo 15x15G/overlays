@@ -1,0 +1,63 @@
+
+.Eorzea90{
+	font-size:90%;
+	text-align:right;
+}
+.Eorzea70{
+	font-size:70%;
+}
+.EorzeaBox1{
+	margin:0 0 1px 0;
+	padding:0 5px;
+	border:outset 1px;
+}
+.EorzeaIcon{
+	height:1em;
+	vertical-align:text-bottom;
+}
+.EorzeaFilter{
+	filter:alpha(opacity=70);
+	-moz-opacity:0.7;
+	opacity:0.7;
+}
+.EorzeaNext{
+	color:rgba(0,0,0,0.7);
+	margin:0 0 0 1em;
+}
+.EorzeaCountDown{
+	text-align:right;
+}
+.EorzeaContentsTitle{
+	margin:0 0 0 1em;
+}
+.EorzeaRed{
+	color:red;
+}
+.EorzeaBlue{
+	color:blue;
+}
+.eorzea_spirit{
+	background-color:rgba(0,0,0,0.1);
+}
+.eorzea_wind{
+	background-color:rgba(0,255,153,0.1);
+}
+.eorzea_lightning{
+	background-color:rgba(153,000,153,0.1);
+}
+.eorzea_fire{
+	background-color:rgba(204,0,0,0.1);
+}
+.eorzea_earth{
+	background-color:rgba(153,153,0,0.1);
+}
+.eorzea_ice{
+	background-color:rgba(153,255,255,0.1);
+}
+.eorzea_water{
+	background-color:rgba(0,153,255,0.1);
+}
+.eorzea_star{
+	background-color:rgba(255,255,204,0.1);
+}
+

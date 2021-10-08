@@ -75,5 +75,3 @@ function init() {
 init();
 startOverlayEvents();
 
-//decodeURIComponent('%F3%A0%80%80').codePointAt(0)
-//decodeURIComponent('%F3%A0%BF%B0').codePointAt(0)
