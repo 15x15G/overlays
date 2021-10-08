@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html lang="zh">
 
 <head>
@@ -7,9 +6,25 @@
     <script src="https://act.diemoe.net/overlays/common/common.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
     <script type="module" src="./test.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/js/standalone/selectize.min.js" integrity="sha256-+C0A5Ilqmu4QcSPxrlGpaZxJ04VjsRjKu+G82kl5UJk=" crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/css/selectize.bootstrap3.min.css" integrity="sha256-ze/OEYGcFbPRmvCnrSeKbRTtjG4vGLHXgOqsyLFTRjg=" crossorigin="anonymous" />
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/js/standalone/selectize.min.js" integrity="sha256-+C0A5Ilqmu4QcSPxrlGpaZxJ04VjsRjKu+G82kl5UJk=" crossorigin="anonymous"></script> -->
+    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/css/selectize.bootstrap3.min.css" integrity="sha256-ze/OEYGcFbPRmvCnrSeKbRTtjG4vGLHXgOqsyLFTRjg=" crossorigin="anonymous" /> -->
+    <style>
+        body,
+        html {
+            margin: 0;
+            background-color: white;
+        }
 
+        html {
+            height: 100%;
+            overflow: hidden;
+
+            /* FFXIV font look */
+            font-family: "Meiryo";
+            font-size: 12px;
+            font-weight: 300;
+        }
+    </style>
 </head>
 
 <body>
@@ -17,15 +32,11 @@
         <p>(🔒锁定悬浮窗以隐藏)</p>
     </div>
     <main id="main">
-        <p>
-            <select id="zones" placeholder="未载入">
-            </select>
-        </p>
-        <p><button id="clear">删除</button>
-            <button id="save">保存</button>
-        </p>
-        <input id="title">
-        <textarea id="text" style="resize: none;min-height: 80vh;min-width: 90vw"></textarea>
+        <select id="zones" placeholder="未载入" hidden>
+        </select>
+        <input id="title"><button id="save">保存</button>
+        <br>
+        <textarea id="text" style="resize: none;min-height: 70vh;min-width: 85vw"></textarea>
     </main>
 </body>
 
