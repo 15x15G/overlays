@@ -1,7 +1,8 @@
-import 'https://act.diemoe.net/overlays/common/common.min.js';
+//import 'https://act.diemoe.net/overlays/common/common.min.js';
+import 'https://blog.bluefissure.com/cactoverlay/resources/common.js';
 import { checkLog, Comparison, extractLog } from "../src/logLineProcessing.js";
 
-let recording = true;
+var recording = true;
 
 $(document).ready(function () {
     $('#actlog_table').DataTable({

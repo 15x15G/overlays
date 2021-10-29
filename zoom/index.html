@@ -1,23 +1,23 @@
-<html id="actlog_html">
+<html lang="zh" id="actlog_html">
 
 <head>
     <title></title>
     <meta charset="utf-8" />
 
     <!-- OverlayPlugin widget resize handle -->
-    <script type="text/javascript" charset="utf8" src="https://blog.bluefissure.com/cactoverlay/lib/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
 
     <link rel="stylesheet" type="text/css" href="https://blog.bluefissure.com/cactoverlay/lib/DataTables/datatables.min.css" />
     <script type="text/javascript" src="https://blog.bluefissure.com/cactoverlay/lib/DataTables/datatables.min.js"></script>
 
     <link rel="stylesheet" href="https://blog.bluefissure.com/cactoverlay/resources/defaults.css">
-    <link rel="stylesheet" href="https://blog.bluefissure.com/cactoverlay/resources/resize_handle.css">
+    <link rel="stylesheet" href="https://blog.bluefissure.com/cactove   rlay/resources/resize_handle.css">
 
     <script type="module" src="https://blog.bluefissure.com/cactoverlay/resources/common.js"></script>
     <script type="module" src="https://blog.bluefissure.com/cactoverlay/resources/regexes.js"></script>
     <script type="module" src="https://blog.bluefissure.com/cactoverlay/resources/netregexes.js"></script>
-    <!-- <script src="../../resources/resize_handle.js"></script> -->
-    <script type="module" src="actlog.js"></script>
+    <!-- <script src="https://blog.bluefissure.com/cactoverlay/resources/resize_handle.js"></script> -->
+    <script type="module" src="./actlog.js"></script>
     <script>
         function addlog(str0, str1, str2) {
             $('#actlog_table').DataTable().row.add({ Time: str0, ID: str1, Name: str2 }).draw();
