@@ -44,7 +44,7 @@ $(document).ready(function () {
 
 addOverlayListener("LogLine", (e) => {
     if (!recording) return;
-    if (checkLog(e.line, "01")) {
+    if (checkLog(e.line, "01", {})) {
         let t = $('#actlog_table').DataTable();
         const time = extractLog(e.line, "Time");
         const id = extractLog(e.line, "ZoneID");
