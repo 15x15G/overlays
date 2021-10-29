@@ -1,5 +1,7 @@
 //import 'https://act.diemoe.net/overlays/common/common.min.js';
 import 'https://blog.bluefissure.com/cactoverlay/resources/common.js';
+import "https://cdn.jsdelivr.net/npm/moment@2.18.1/min/moment.min.js"
+
 import { checkLog, Comparison, extractLog } from "../src/logLineProcessing.js";
 
 var recording = true;
@@ -46,8 +48,10 @@ addOverlayListener("LogLine", (e) => {
     if (!recording) return;
     if (checkLog(e.line, "01", {})) {
         let t = $('#actlog_table').DataTable();
-        const time = extractLog(e.line, "Time");
-        const id = extractLog(e.line, "ZoneID");
+        let time = extractLog(e.line, "Time");
+        time = moment(time).format("YY/MM/DD HH:mm");
+        let id = extractLog(e.line, "ZoneID");
+        id = parseInt(id, 16);
         const name = extractLog(e.line, "ZoneName");
         t.row.add({ Time: time, ID: id, Name: name });
         t.draw(false);
