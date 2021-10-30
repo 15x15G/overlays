@@ -73,7 +73,7 @@ function getWeatherRate(i) {
             // get WeatherRate
             const WeatherRateid = item["12"];
             if (WeatherRateid == "0") {
-                return { "weather": ["晴朗"], "rate": ["100"] }
+                return { "weather": ["2"], "rate": ["100"] }
             }
             for (let item2 of WeatherRate) {
                 if (item2.key == WeatherRateid) {
