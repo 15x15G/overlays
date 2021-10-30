@@ -230,11 +230,11 @@ function show() {
     const moon = `${EtMoonImg}<span style="vertical-align:middle;">${EtMoonText}</span>`;
 
     //天气
-    const w = ""
+    let w = ""
     if (window.rateid && window.rateid != 0)
         w = getWeather(getWeatherRate(window.rateid));
 
-    let output = `${lt}<br/>${etstr}<br/>${EtMonthImg}${moon}<br/>${w}`
+    let output = `${lt}<br/>${etstr}<br/>${w} ${EtMonthImg} ${moon}`
     if ($('#clock')) {
         $('#clock').html(output);
     }
