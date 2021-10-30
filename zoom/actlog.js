@@ -66,14 +66,15 @@ function getWeatherRate(i) {
             for (let item1 of PlaceName) {
                 if (item1.key == PlaceNameid) {
                     pname = item1["0"];
+                    break;
                 }
             }
-            if (pname == "") pname = "no name";
+            if (!pname || pname == "") pname = "???";
 
             // get WeatherRate
             const WeatherRateid = item["12"];
             if (WeatherRateid == "0") {
-                return { "weather": ["2"], "rate": ["100"] }
+                return { "name": pname, "weather": ["2"], "rate": ["100"] }
             }
             for (let item2 of WeatherRate) {
                 if (item2.key == WeatherRateid) {
