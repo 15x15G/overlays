@@ -3,6 +3,7 @@ import 'https://blog.bluefissure.com/cactoverlay/resources/common.js';
 // import "https://cdn.jsdelivr.net/npm/moment@2.29.1/min/moment.min.js"
 // import "https://unpkg.com/papaparse@latest/papaparse.min.js"
 import { checkLog, Comparison, extractLog } from "../src/logLineProcessing.js";
+import EorzeaClock from "../clock/weather.js";
 
 var recording = true;
 var Weather = []
@@ -44,7 +45,7 @@ $(document).ready(async function () {
     }
     let Weather2 = {}
     for (let item of Weather) {
-        Weather2[item["key"]] = item["1"]
+        Weather2[item["key"]] = getIcon(item["0"]) + item["1"];
     }
     Weather = Weather2;
 
@@ -54,15 +55,31 @@ $(document).ready(async function () {
     window.PlaceName = PlaceName;
 });
 
-// in(int): TerritoryType out(json): {name:[],rate:[]}
+// in(int): TerritoryType out(json): {name:str,weather:[],rate:[]}
 function getWeatherRate(i) {
     for (let item of TerritoryType) {
         if (item.key == `${i}`) {
+
+            //get PlaceName
+            const PlaceNameid = item["5"];
+            let pname = "";
+            for (let item1 of PlaceName) {
+                if (item1.key == PlaceNameid) {
+                    pname = item1["0"];
+                }
+            }
+            if (pname == "") pname = "no name";
+
+            // get WeatherRate
             const WeatherRateid = item["12"];
+            if (WeatherRateid == "0") {
+                return { "weather": ["晴朗"], "rate": ["100"] }
+            }
             for (let item2 of WeatherRate) {
                 if (item2.key == WeatherRateid) {
                     item2 = {
-                        "name": [Weather[item2["0"]], Weather[item2["2"]], Weather[item2["4"]], Weather[item2["6"]], Weather[item2["8"]], Weather[item2["10"]], Weather[item2["12"]], Weather[item2["14"]]],
+                        "name": pname,
+                        "weather": [item2["0"], item2["2"], item2["4"], item2["6"], item2["8"], item2["10"], item2["12"], item2["14"]],
                         "rate": [item2["1"], item2["3"], item2["5"], item2["7"], item2["9"], item2["11"], item2["13"], item2["15"]]
                     }
                     return item2
@@ -74,18 +91,35 @@ function getWeatherRate(i) {
     return null;
 }
 
-// in(int,json): weathervalue,{name:[],rate:[]} out(str):weather
-function getWeather(i, rate) {
-    const namearray = rate.name;
+// in(json,int): {name:str,weather:[],rate:[]}, weatherseed
+// out(str): weather
+function getWeather(rate, seed = getSeed()) {
+    const namearray = rate.weather;
     const ratearray = rate.rate;
-    let a = i;
+    let temp = seed;
     for (let v in ratearray) {
-        a = a - parseInt(ratearray[v])
-        if (a <= 0) {
-            return namearray[v]
+        temp = temp - parseInt(ratearray[v])
+        if (temp < 0) {
+            return rate.name + " " + Weather[namearray[v]]
         }
     }
 }
+
+
+
+function getSeed(time = new EorzeaClock) {
+    const t = time.getDays() * 100 + (time.getHours() + 8 - time.getHours() % 8) % 24;
+    const i = calcSeed(t);
+    return i
+    function calcSeed(base) {
+        // tslint:disable:no-bitwise
+        const step1 = (base << 11 ^ base) >>> 0;
+        const step2 = (step1 >>> 8 ^ step1) >>> 0;
+        // tslint:enable:no-bitwise
+        return step2 % 100;
+    }
+}
+
 
 function TerritoryType2PlaceName(i) {
     for (let item of TerritoryType) {
@@ -102,6 +136,15 @@ function TerritoryType2PlaceName(i) {
         }
     }
     return `wrong TerritoryTypeid ${i}`;
+}
+
+function getIcon(i) {
+    let str = `${i}`;
+    if (str == "" || str == "0") return "";
+    while (str.length <= 5) str = '0' + str;
+    const folder = str.substring(0, 3) + "000"
+    const url = `https://xivapi.com/i/${folder}/${str}.png`
+    return `<img style="vertical-align:middle;" src=${url}>`
 }
 
 function toJson(url) {
@@ -125,21 +168,28 @@ function toJson(url) {
 addOverlayListener("LogLine", (e) => {
     if (!recording) return;
     if (checkLog(e.line, "01", {})) {
-        let t = $('#actlog_table').DataTable();
         let time = extractLog(e.line, "Time");
-        time = moment(time).format("YY/MM/DD HH:mm");
         let id = extractLog(e.line, "ZoneID");
         id = parseInt(id, 16);
         const name = extractLog(e.line, "ZoneName");
-        t.row.add({ Time: time, ID: id, Name: name });
-        t.draw(false);
-        let num_rows = t.page.info().recordsTotal;
-        t.row(num_rows - 1).scrollTo(false);
 
-        console.log(`${time} ${id} ${name}`);
-        console.log(getWeatherRate(id));
+        addrow(id, name, time);
     }
 });
+
+function addrow(rateid, name = "", time = moment()) {
+    console.log(`${time} ${rateid} ${name}`);
+    const unixms = moment(time).valueOf();
+    name = getWeather(getWeatherRate(rateid), getSeed(new EorzeaClock(unixms)))
+
+    let t = $('#actlog_table').DataTable();
+    t.row.add({ Time: moment(time).format("YY/MM/DD HH:mm"), ID: rateid, Name: name });
+    t.draw(false);
+    let num_rows = t.page.info().recordsTotal;
+    t.row(num_rows - 1).scrollTo(false);
+
+
+}
 
 $('#cleatLogButton').click(() => {
     let t = $('#actlog_table').DataTable();
@@ -152,4 +202,15 @@ $('#startStopButton').click(() => {
     $('#startStopButton').text(recording ? '停止记录' : '开始记录');
 });
 
-export { getWeatherRate, TerritoryType2PlaceName, getWeather }
+
+function show() {
+    const lt = moment().format("HH:mm:ss");
+    const et = new EorzeaClock().toHHmmssString();
+    let output = `${lt}\n${et}`
+    if ($('#clock')) {
+        $('#clock').html(output);
+    }
+    setTimeout("show()", 50);
+}
+
+export { getWeatherRate, TerritoryType2PlaceName, getWeather, getSeed, addrow, show }

@@ -23,16 +23,14 @@
 
 
     <script type="module">
-        import { TerritoryType2PlaceName, getWeatherRate, getWeather } from "./actlog.js";
+        import { TerritoryType2PlaceName, getWeatherRate, getWeather, getSeed, addrow, show } from "./actlog.js";
         window.TerritoryType2PlaceName = TerritoryType2PlaceName;
         window.getWeatherRate = getWeatherRate;
         window.getWeather = getWeather;
-    </script>
-    <script>
-        function addlog(str0, str1, str2) {
-            $('#actlog_table').DataTable().row.add({ Time: str0, ID: str1, Name: str2 }).draw();
-        }
-
+        window.getSeed = getSeed;
+        window.addrow = addrow;
+        window.show = show;
+        setTimeout("show()", 100);
     </script>
     <style>
         body,
@@ -57,9 +55,34 @@
             padding-right: 2px;
         }
     </style>
+    <style>
+        @font-face {
+            font-family: 'FFXIV';
+            src: url('//15x15g.github.io/fonts/FFXIV_Lodestone_SSF.ttf') format('truetype'),
+                url('//15x15g.github.io/fonts/FFXIV_Lodestone_SSF.woff') format('woff');
+            unicode-range: U+E020-E0DB;
+            font-weight: 100 400;
+        }
+
+        body,
+        html {
+            font-family: 'FFXIV', "Meiryo", Arial;
+        }
+
+        #clock {
+            display: table;
+            margin: 0 auto;
+            text-align: center
+        }
+    </style>
 </head>
 
 <body id="actlog_body">
+    <div id="clock">
+        本：
+        艾：
+
+    </div>
     <div id="actlog_button">
         <center>
             <button id="startStopButton">停止记录</button>
