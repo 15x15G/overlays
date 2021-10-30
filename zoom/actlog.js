@@ -3,7 +3,7 @@ import 'https://blog.bluefissure.com/cactoverlay/resources/common.js';
 // import "https://cdn.jsdelivr.net/npm/moment@2.29.1/min/moment.min.js"
 // import "https://unpkg.com/papaparse@latest/papaparse.min.js"
 import { checkLog, Comparison, extractLog } from "../src/logLineProcessing.js";
-import EorzeaClock from "../clock/weather.js";
+
 
 var recording = true;
 var Weather = []
@@ -107,7 +107,7 @@ function getWeather(rate, seed = getSeed()) {
 
 
 
-function getSeed(time = new EorzeaClock) {
+function getSeed(time = localToEorzea()) {
     const t = time.getDays() * 100 + (time.getHours() + 8 - time.getHours() % 8) % 24;
     const i = calcSeed(t);
     return i
@@ -172,7 +172,7 @@ addOverlayListener("LogLine", (e) => {
         let id = extractLog(e.line, "ZoneID");
         id = parseInt(id, 16);
         const name = extractLog(e.line, "ZoneName");
-
+        window.rateid = id;
         addrow(id, name, time);
     }
 });
@@ -180,7 +180,7 @@ addOverlayListener("LogLine", (e) => {
 function addrow(rateid, name = "", time = moment()) {
     console.log(`${time} ${rateid} ${name}`);
     const unixms = moment(time).valueOf();
-    name = getWeather(getWeatherRate(rateid), getSeed(new EorzeaClock(unixms)))
+    name = getWeather(getWeatherRate(rateid), getSeed(localToEorzea(unixms)))
 
     let t = $('#actlog_table').DataTable();
     t.row.add({ Time: moment(time).format("YY/MM/DD HH:mm"), ID: rateid, Name: name });
@@ -204,9 +204,37 @@ $('#startStopButton').click(() => {
 
 
 function show() {
-    const lt = moment().format("HH:mm:ss");
-    const et = new EorzeaClock().toHHmmssString();
-    let output = `${lt}\n${et}`
+    const lt = moment().format("MM/DD HH:mm:ss");
+    const et = localToEorzea(moment().valueOf());
+    const etMM = doubleDigit(et.getMonth());
+    const etDD = doubleDigit(et.getDate());
+    const ethh = doubleDigit(et.getHours());
+    const etmm = doubleDigit(et.getMinutes());
+    const etss = doubleDigit(et.getSeconds());
+    const etstr = `${etMM}/${etDD} ${ethh}:${etmm}:${etss}`;
+
+    //月份图标
+    const EtMonth = et.getMonth() + 1;
+    const EtMonthIcon = ["01halone.png", "02menphina.png", "03thaliak.png", "04nymeia.png", "05llymlaen.png", "06oschon.png", "07byregot.png", "08rhalgr.png", "09azeyma.png", "10naldthal.png", "11nophica.png", "12althyk.png"];
+    const EtMonthIconUrl = 'https://15x15g.github.io/img/' + EtMonthIcon[EtMonth - 1];
+    const EtMonthImg = `<img style="vertical-align:middle;" src="${EtMonthIconUrl}">`
+
+    //月相
+    const EorzeaMoon = eorzeaMoon();
+    EorzeaMoon.setTime(et.getTime());
+    const EtMoon = EorzeaMoon.getMoon();
+    const MOON_LIST_TEXT = ["新月", "三日月", "上弦の月", "十三夜", "満月", "十六夜", "下弦の月", "二十六夜"];
+    const MOON_LIST = ["new", "new_crescent", "quarter", "new_gibbous", "full", "old_gibbous", "waning", "old_crescent"];
+    const EtMoonImg = `<img style="vertical-align:middle;" src="https://15x15g.github.io/img/${EtMoon}.png">`;
+    const EtMoonText = MOON_LIST_TEXT[MOON_LIST.indexOf(EtMoon)];
+    const moon = `${EtMoonImg}<span style="vertical-align:middle;">${EtMoonText}</span>`;
+
+    //天气
+    const w = ""
+    if (window.rateid && window.rateid != 0)
+        w = getWeather(getWeatherRate(window.rateid));
+
+    let output = `${lt}<br/>${etstr}<br/>${EtMonthImg}${moon}<br/>${w}`
     if ($('#clock')) {
         $('#clock').html(output);
     }

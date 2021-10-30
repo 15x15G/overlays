@@ -20,6 +20,7 @@
 
     <script src="https://cdn.jsdelivr.net/npm/moment@2.18.1/moment.js"></script>
     <script src="https://unpkg.com/papaparse@latest/papaparse.min.js"></script>
+    <script src="https://15x15g.github.io/js/eoclock.js"></script>
 
 
     <script type="module">
@@ -72,17 +73,15 @@
         #clock {
             display: table;
             margin: 0 auto;
-            text-align: center
+            /* text-align: center */
         }
     </style>
 </head>
 
 <body id="actlog_body">
-    <div id="clock">
-        本：
-        艾：
-
-    </div>
+    <header class="navbar">
+        <div class="site-name" id="clock"></span>
+    </header>
     <div id="actlog_button">
         <center>
             <button id="startStopButton">停止记录</button>
