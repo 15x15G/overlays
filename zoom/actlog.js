@@ -73,9 +73,9 @@ $(document).ready(async function () {
         order = order.split(',');
 
         const options = {
-            grid: 20,
-            threshold: 10,
-            limit: document.getElementsByTagName('body'),
+            grid: 10,
+            threshold: 5,
+            limit: document.getElementById("dragzoom"),
             setCursor: true,
             setPosition: true,
             smoothDrag: false,
@@ -159,7 +159,7 @@ function getWeather(rate, seed = getSeed()) {
     }
 }
 
-function getSeed(time = localToEorzea()) {
+function getSeed(time = localToEorzea(Date.now())) {
     const t = time.getDays() * 100 + (time.getHours() + 8 - time.getHours() % 8) % 24;
     const i = calcSeed(t);
     return i
@@ -276,18 +276,26 @@ function show1() {
 
     //天气
     let w = "[天气]"
-    if (window.rateid && window.rateid != 0)
-        w = getWeather(getWeatherRate(window.rateid));
+    if (window.rateid && window.rateid != 0) {
+        w = getWeather(getWeatherRate(window.rateid), getSeed(et));
+        w1 = getWeather(getWeatherRate(window.rateid), getSeed(localToEorzea(moment().add(1400, "seconds").valueOf())));
+
+    }
 
     let output = `${lt}<br/>${etstr}<br/>${EtMonthImg}${moon}<br/>${w}`
     $('#clock').html(output);
     $('#lt').html(`${lt}`);
     $('#et').html(`${etstr}`);
-    $('#monthicon').html(`${EtMonthImg}`);
-    $('#moonicon').html(`${EtMoonImg}`);
-    $('#moontext').html(`${EtMoonText}`);
-    $('#weather').html(`${w}`);
-
+    if ($('#monthicon').html() != `${EtMonthImg}`)
+        $('#monthicon').html(`${EtMonthImg}`);
+    if ($('#moonicon').html() != `${EtMoonImg}`)
+        $('#moonicon').html(`${EtMoonImg}`);
+    if ($('#moontext').html() != `${EtMoonText}`)
+        $('#moontext').html(`${EtMoonText}`);
+    if ($('#weather').html() != `${w}`)
+        $('#weather').html(`${w}`);
+    if ($('#nextweather').html() != `->${w1}`)
+        $('#nextweather').html(`->${w1}`);
     setTimeout("show1()", 1000);
 }
 
