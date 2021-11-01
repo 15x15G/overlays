@@ -5,12 +5,15 @@ import 'https://blog.bluefissure.com/cactoverlay/resources/common.js';
 import { checkLog, Comparison, extractLog } from "../src/logLineProcessing.js";
 
 
+
 var recording = true;
 var Weather = []
 var WeatherRate = []
 var TerritoryType = []
 var PlaceName = []
+
 $(document).ready(async function () {
+    // 初始化DataTable
     $('#actlog_table').DataTable({
         paging: true,
         scrollX: true,
@@ -34,7 +37,7 @@ $(document).ready(async function () {
         }
     });
 
-    console.log("start");
+    // 初始化csv数据
     try {
         WeatherRate = await toJson("https://cdn.jsdelivr.net/gh/thewakingsands/ffxiv-datamining-cn@master/WeatherRate.csv")
         Weather = await toJson("https://cdn.jsdelivr.net/gh/thewakingsands/ffxiv-datamining-cn@master/Weather.csv")
@@ -53,7 +56,57 @@ $(document).ready(async function () {
     window.WeatherRate = WeatherRate;
     window.TerritoryType = TerritoryType;
     window.PlaceName = PlaceName;
+
+    // 初始化字符串
+    show1();
+    console.log("load success");
+
+    window.lock = true;
+
+    // 初始化 drag & localStorage
+    for (let element of $('.drag')) {
+        var order = localStorage.getItem(element.id);
+        if (!order || order.split(",").length != 3) {
+            localStorage.setItem(element.id, `10,10,true`);
+            order = `10,10,true`;
+        }
+        order = order.split(',');
+
+        const options = {
+            grid: 20,
+            threshold: 10,
+            limit: document.getElementsByTagName('body'),
+            setCursor: true,
+            setPosition: true,
+            smoothDrag: false,
+            filterTarget: function () { return window.lock; },
+            onDrag: function (element, x, y, event) {
+                localStorage.setItem(element.id, `${x},${y},true`);
+            }
+        };
+        const d = new Draggable(element, options);
+        d.set(order[0], order[1])
+        $(element).toggle(order[2] === 'true');
+    }
 });
+
+function toJson(url) {
+    return new Promise((resolve, reject) => {
+        Papa.parse(url, {
+            download: true,
+            header: true,
+            encoding: "utf-8",
+            skipEmptyLines: true,
+            complete(results, file) {
+                // console.log("Parsing complete:", results, file);
+                resolve(results.data)
+            },
+            error(err, file) {
+                reject(err)
+            }
+        })
+    })
+}
 
 // in(int): TerritoryType out(json): {name:str,weather:[],rate:[]}
 function getWeatherRate(i) {
@@ -105,8 +158,6 @@ function getWeather(rate, seed = getSeed()) {
     }
 }
 
-
-
 function getSeed(time = localToEorzea()) {
     const t = time.getDays() * 100 + (time.getHours() + 8 - time.getHours() % 8) % 24;
     const i = calcSeed(t);
@@ -119,7 +170,6 @@ function getSeed(time = localToEorzea()) {
         return step2 % 100;
     }
 }
-
 
 function TerritoryType2PlaceName(i) {
     for (let item of TerritoryType) {
@@ -147,23 +197,6 @@ function getIcon(i) {
     return `<img style="vertical-align:middle;" src=${url}>`
 }
 
-function toJson(url) {
-    return new Promise((resolve, reject) => {
-        Papa.parse(url, {
-            download: true,
-            header: true,
-            encoding: "utf-8",
-            skipEmptyLines: true,
-            complete(results, file) {
-                console.log("Parsing complete:", results, file);
-                resolve(results.data)
-            },
-            error(err, file) {
-                reject(err)
-            }
-        })
-    })
-}
 
 addOverlayListener("LogLine", (e) => {
     if (!recording) return;
@@ -202,8 +235,19 @@ $('#startStopButton').click(() => {
     $('#startStopButton').text(recording ? '停止记录' : '开始记录');
 });
 
+$("#settings").on("click", () => {
+    window.open("./settings.html", "_blank", "width=300,height=300");
+});
 
-function show() {
+$(".change").on("click", () => {
+    $(".change").toggle()
+    window.lock = !window.lock;
+    $("#settings").toggle(window.lock);
+});
+
+
+
+function show1() {
     const lt = moment().format("MM/DD HH:mm:ss");
     const et = localToEorzea(moment().valueOf());
     const etMM = doubleDigit(et.getMonth());
@@ -230,15 +274,20 @@ function show() {
     const moon = `${EtMoonImg}<span style="vertical-align:middle;">${EtMoonText}</span>`;
 
     //天气
-    const w = ""
+    const w = "[天气]"
     if (window.rateid && window.rateid != 0)
         w = getWeather(getWeatherRate(window.rateid));
 
     let output = `${lt}<br/>${etstr}<br/>${EtMonthImg}${moon}<br/>${w}`
-    if ($('#clock')) {
-        $('#clock').html(output);
-    }
-    setTimeout("show()", 50);
+    $('#clock').html(output);
+    $('#lt').html(`${lt}`);
+    $('#et').html(`${etstr}`);
+    $('#monthicon').html(`${EtMonthImg}`);
+    $('#moonicon').html(`${EtMoonImg}`);
+    $('#moontext').html(`${EtMoonText}`);
+    $('#weather').html(`${w}`);
+
+    setTimeout("show1()", 1000);
 }
 
-export { getWeatherRate, TerritoryType2PlaceName, getWeather, getSeed, addrow, show }
+export { getWeatherRate, TerritoryType2PlaceName, getWeather, getSeed, addrow, show1 }
