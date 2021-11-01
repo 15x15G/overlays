@@ -119,14 +119,15 @@ function getWeatherRate(i) {
             for (let item1 of PlaceName) {
                 if (item1.key == PlaceNameid) {
                     pname = item1["0"];
+                    break;
                 }
             }
-            if (pname == "") pname = "no name";
+            if (!pname || pname == "") pname = "???";
 
             // get WeatherRate
             const WeatherRateid = item["12"];
             if (WeatherRateid == "0") {
-                return { "weather": ["晴朗"], "rate": ["100"] }
+                return { "name": pname, "weather": ["2"], "rate": ["100"] }
             }
             for (let item2 of WeatherRate) {
                 if (item2.key == WeatherRateid) {
@@ -274,7 +275,7 @@ function show1() {
     const moon = `${EtMoonImg}<span style="vertical-align:middle;">${EtMoonText}</span>`;
 
     //天气
-    const w = "[天气]"
+    let w = "[天气]"
     if (window.rateid && window.rateid != 0)
         w = getWeather(getWeatherRate(window.rateid));
 
